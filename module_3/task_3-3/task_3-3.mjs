@@ -4,22 +4,85 @@ initPrintOut(document.getElementById("txtOut"));
 
 printOut("--- Part 1 ----------------------------------------------------------------------------------------------");
 /* Put your code below here!*/
-printOut("Replace this with you answer!");
+function printTodaysDate() {
+    const today = new Date();
+    const norwegianDate = today.toLocaleDateString('no-NB', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    printOut(`I dag er det ${norwegianDate}`);
+  }
+  
+  printTodaysDate();
+
+
 printOut(newLine);
 
 printOut("--- Part 2 ----------------------------------------------------------------------------------------------");
 /* Put your code below here!*/
-printOut("Replace this with you answer!");
+function getTodaysDate() {
+    const today = new Date();
+    const norwegianDate = today.toLocaleDateString('no-NB', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    printOut(`I dag er det ${norwegianDate}`);
+    return today;
+  }
+  function daysUntil2XKOLaunch() {
+    const today = new Date();
+    const launchDate = new Date('2025-05-14');
+    const timeDifference = launchDate - today;
+    const daysLeft = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+    return daysLeft;
+  }
+  function displayDateAndCountdown() {
+    const today = getTodaysDate();
+    const daysLeft = daysUntil2XKOLaunch();
+    printOut(`I dag er det ${today.toLocaleDateString('no-NB')}`);
+    printOut(`Det er ${daysLeft} dager igjen til lanseringen av 2XKO!`);
+  }
+  
+  displayDateAndCountdown();
+
+
 printOut(newLine);
 
 printOut("--- Part 3 ----------------------------------------------------------------------------------------------");
 /* Put your code below here!*/
-printOut("Replace this with you answer!");
+function circleProperties(radius) {
+    const diameter = 2 * radius;
+    const circumference = 2 * Math.PI * radius;
+    const area = Math.PI * radius * radius;
+  
+    printOut(`Diameter: ${diameter}`);
+    printOut(`Omkrets: ${circumference.toFixed(2)}`);
+    printOut(`Areal: ${area.toFixed(2)}`);
+  }
+  
+  circleProperties(5);
+
+
 printOut(newLine);
 
 printOut("--- Part 4 ----------------------------------------------------------------------------------------------");
 /* Put your code below here!*/
-printOut("Replace this with you answer!");
+function rectangleProperties(rectangle) {
+    const { width, height } = rectangle;
+    const circumference = 2 * (width + height);
+    const area = width * height;
+  
+    printOut(`Omkrets: ${circumference}`);
+    printOut(`Areal: ${area}`);
+  }
+  
+  rectangleProperties({ width: 10, height: 5 });
+
+
 printOut(newLine);
 
 printOut("--- Part 5 ----------------------------------------------------------------------------------------------");
@@ -54,12 +117,12 @@ function convertTemperature(aTemperature, aType){
         case ETemperaturType.Kelvin:
             printOut("Convert from Kelvin");
             break;
-    }// End Switch
+    }
 
     printOut("Celsius = " + Celsius.toFixed(0));
     printOut("Fahrenheit = " + Fahrenheit.toFixed(0));
     printOut("Kelvin = " + Kelvin.toFixed(0));
-}// End function
+}
 
 convertTemperature(0, ETemperaturType.Celsius);
 
@@ -68,8 +131,9 @@ printOut(newLine);
 printOut("--- Part 6 ----------------------------------------------------------------------------------------------");
 /* Put your code below here!*/
 function calculateNetPrice(aPrice, aTaxGroup){
-    let net = 0;
+    let net = NaN;
     let taxGroup = aTaxGroup.toUpperCase();
+    let vat = NaN;
     printOut("TaxGroup = " + taxGroup);
 
     switch(taxGroup){
@@ -97,12 +161,14 @@ if(Number.isNaN(netPrice2)) {
     printOut("netPrice2 = " + netPrice2.toFixed(2))
 }
 
+printOut("");
 
-printOut("Replace this with you answer!");
+
 printOut(newLine);
 
 printOut("--- Part 7 ----------------------------------------------------------------------------------------------");
 /* Put your code below here!*/
+
 printOut("Replace this with you answer!");
 printOut(newLine);
 
@@ -127,7 +193,7 @@ function testIfMathIsFun(){
     }
 
     let sumRight = 0;
-    for(let right = 0; right < line; right ++){
+    for (let right = 0; right < line; right++){
         sumRight += op;
         op++;
 
@@ -135,15 +201,26 @@ function testIfMathIsFun(){
 
     if(sumLeft !== sumRight){
         ok = false;
+        printOut("Error in line " + line.toString());
     }else{
         ok = true;
     }
     line++;
-} while (!ok);
+
+    if(line > 200){
+        printOut("Math is fun!");
+        break;
+    }
+
+} while (ok);
 
 }
 
-printOut("Replace this with you answer!");
+testIfMathIsFun();
+
+
+printOut(" ");
+
 printOut(newLine);
 
 /* Task 10*/
