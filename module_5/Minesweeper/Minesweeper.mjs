@@ -3,6 +3,7 @@ import lib2d from "../../common/libs/lib2d_v2.mjs";
 import libSprite from "../../common/libs/libSprite_v2.mjs";
 import { TGameBoard } from "./GameBoard.mjs";
 import { TTile , forEachTile} from "./Tile.mjs";
+import { TScoreBoard } from "./ScoreBoard.mjs";
 
 //-----------------------------------------------------------------------------------------
 //----------- variables and object --------------------------------------------------------
@@ -40,12 +41,14 @@ const selectDifficulty = document.getElementById("selectDifficulty");
 export const gameProps = {
   gameBoard: null,
   tiles: [],
+  ScoreBoard: null,
 }
 //-----------------------------------------------------------------------------------------
 //----------- functions -------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------
 function loadGame() {
   newGame();
+  gameProps.ScoreBoard
   drawGame();
 }
 
@@ -82,6 +85,7 @@ function drawGame() {
   gameProps.gameBoard.draw();
   //husk å tegne forekomsten av TTile
   forEachTile(drawTile);
+  gameProps.ScoreBoard
   requestAnimationFrame(drawGame);
 }
 

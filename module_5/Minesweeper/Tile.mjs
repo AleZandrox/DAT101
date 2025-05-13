@@ -10,6 +10,8 @@ Rop på super sin konstruktør med aSpriteCanvas, aSpriteInfo, aPos
 Test klassen ved å lage en forekomst av TTile i Minesweeper.mjs (GameProps)
 */
 
+const MineInfoColors = ["blue", "green", "red", "darkblue", "brown", "cyan", "black", "grey"];
+
 class TCell{
     constructor(aRow, aColumn){
         this.row = aRow;
@@ -31,12 +33,31 @@ class TCell{
         if(cols.from < 0){
             cols.from = 0;
         }
-        //Teste dette også for rows.to og cols.to, med gameLevel.Tiles.Row og gameLevel.Tiles.Col
-    }
-}
+        if(rows.to >= gameLevel.Tiles.Row){
+            rows.to = gameLevel.Tiles.Row - 1;
+        }
+        if(cols.to >= gameLevel.Tiles.Col){
+            cols.to = gameLevel.Tiles.Col - 1
+        }
+        const neighbors = [];
+        for(let rowIndex = rows.from; rowIndex <= rows.to; rowIndex++ ){
+            const row = gameProps.tiles[rowIndex];
+            for(let colIndex = cols.from; colIndex <= cols.to; colIndex++){
+                const isThisTile = (this.row === rowIndex && this.col === colIndex);
+                if(this.row !== rowIndex && this.col !== colIndex){
+                    const tile = row[colIndex];
+                    neighbors.push(tile);
+                }
+            }
+        }
+        return neighbors;
+    }//End of neighbors
+}//End of class
 
 export class TTile extends libSprite.TSpriteButton {
     #isMine;
+    #cell;
+    #mineInfo;
 
     constructor(aSpriteCanvas, aSpriteInfo, aRow, aColumn){
         const cell = new TCell(aRow, aColumn);
@@ -45,6 +66,8 @@ export class TTile extends libSprite.TSpriteButton {
         pos.y += aSpriteInfo.height * cell.row;
         super(aSpriteCanvas, aSpriteInfo, pos);
         this.#isMine = false; //vi setter at det ikke er en mine som default
+        this.#cell = cell;
+        this.#mineInfo = 1;
     }
 
     onMouseDown(aEvent){
@@ -52,7 +75,19 @@ export class TTile extends libSprite.TSpriteButton {
     }
 
     onMouseUp(aEvent){
-        this.index = 2;
+        if(this.#isMine){
+            this.index = 4;
+            //Game Over :(
+        }else{
+            this.index = 2;
+            if (this.#mineInfo === 0){
+            const neighbors = this.#cell.neighbors;
+            for(let i = 0; i < neighbors.length; i++){
+                const neighbor = neighbors[i];
+                neighbor.OpenUp();
+            }
+        }
+    }
         this.disable = true;
     }
 
@@ -68,9 +103,59 @@ export class TTile extends libSprite.TSpriteButton {
 
     set isMine(aValue){
         this.#isMine = aValue;
-        this.index = 4;
+        if(aValue){
+            this.index = 4;
+            const neighbors = this.#cell.neighbors;
+            console.log(this.cell);
+            console.log(neighbors);
+            for(let i = 0; i < neighbors.length; i++){
+                const neighbor = neighbors[i];
+                neighbor.incMineInfo();
+            }
+            this.#mineInfo = 0;
+        }
     }
-}
+
+    incMineInfo(){
+        if(this.#isMine){
+            this.#mineInfo = 0;
+        }else{
+        this.#mineInfo++;
+        }
+    }
+
+    onCustomDraw(aCTX){
+        if(this.isOpen) {
+        if(this.#mineInfo > 0){
+            const posX = this.x + 17;
+            const posY = this.y + 35;
+            aCTX.font = "30px serif";
+            aCTX.fillStyle = MineInfoColors[this.#mineInfo - 1];
+            aCTX.fillText(this.#mineInfo.toString(),posX, posY);
+        }
+    }
+    }
+            get isOpen() {
+            if(this.index !== 0 && this.index !== 1){
+                return true;
+            }
+            return false;
+        }
+
+        OpenUp(){
+            if(this.isOpen){
+                return;
+            }
+            this.index = 2;
+            if(this.#mineInfo === 0){
+                const neighbors = this.#cell.neighbors;
+                for(let i = 0; 1 < neighbors.length; i++){
+                    const neighbor = neighbors[i];
+                    neighbor.OpenUp();
+                }
+            }
+        }
+}//End of class TTile
 
 export function forEachTile(aCallBack){
     if(!aCallBack){

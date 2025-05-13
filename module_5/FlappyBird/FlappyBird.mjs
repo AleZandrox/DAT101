@@ -74,6 +74,13 @@ function loadGame() {
 
   GameProps.menu = new TMenu(spcvs);
 
+  //Load sounds
+  GameProps.sounds.countDown = new libSound.TSoundFile("./Media/countDown.mp3");
+  GameProps.sounds.running = new libSound.TSoundFile("./Media/running.mp3");
+  GameProps.sounds.food = new libSound.TSoundFile("./Media/food.mp3");
+  GameProps.sounds.dead = new libSound.TSoundFile("./Media/heroisDead.mp3");
+  GameProps.sounds.GameOver = new libSound.TSoundFile("./Media/gameOver.mp3")
+
   requestAnimationFrame(drawGame);
   setInterval(animateGame, 10);
 }// end of loadGame
@@ -109,6 +116,7 @@ function animateGame() {
       if (GameProps.hero.isDead) {
         GameProps.hero.animateSpeed = 0;
         GameProps.hero.update();
+        GameProps.sounds.dead.play();
         return;
       }
       GameProps.ground.translate(-GameProps.speed, 0);
@@ -117,13 +125,14 @@ function animateGame() {
       }
       GameProps.hero.update();
       let delObstacleIndex = -1;
+
       for (let i = 0; i < GameProps.obstacles.length; i++) {
         const obstacle = GameProps.obstacles[i];
         obstacle.update();
-        if (obstacle.right < GameProps.hero.left && !hasPassedObstacle){
+        if (obstacle.right < GameProps.hero.left && !obstacle.hasPassedObstacle){
           GameProps.score += 20;
           console.log("Score: " + GameProps.score);
-          Obstacle.hasPassed = true;
+          obstacle.hasPassed = true;
         }
         if (obstacle.posX < -100) {
           delObstacleIndex = i;
@@ -140,6 +149,7 @@ function animateGame() {
         bait.update();
         const posBait = bait.getCenter();
         const dist = posHero.distanceToPoint(posBait);
+        GameProps.sounds.GameOver.play();
         if (dist < 15) {
           delBaitIndex = i;
         }
@@ -147,6 +157,11 @@ function animateGame() {
       if (delBaitIndex >= 0) {
         GameProps.baits.splice(delBaitIndex, 1);
         GameProps.score += 10;
+
+        //Food sound
+        const eatSound = new Audio("./media/food.mp3")
+        eatSound.play();
+
       }
       break;
       case EGameStatus.idle:
@@ -188,6 +203,10 @@ export function startGame(){
   GameProps.score = 0;
   spawnObstacle();
   spawnBait();
+  //Play the running sound
+  GameProps.sounds.running.play();
+  //Play the countDown sound
+  GameProps.sounds.countDown.play();
 }
 
 //--------------- Event Handlers -----------------------------------------//
